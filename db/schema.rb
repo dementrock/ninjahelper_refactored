@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120606101658) do
+ActiveRecord::Schema.define(:version => 20120607075030) do
 
   create_table "courses", :force => true do |t|
     t.string "course_full_name"
@@ -31,6 +31,10 @@ ActiveRecord::Schema.define(:version => 20120606101658) do
     t.string "course_dependency_type"
     t.string "course_section_number"
     t.string "course_type"
+    t.string "enrollment_limit"
+    t.string "enrolled"
+    t.string "waitlist"
+    t.string "avail_seats"
   end
 
 end

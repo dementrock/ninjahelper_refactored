@@ -1,0 +1,23 @@
+class Courses < ActiveRecord::Base
+	attr_accessible :course_full_name, 
+									:course_title, 
+									:location, 
+									:time, 
+									:instructor, 
+									:status, 
+									:course_control_number, 
+									:units, 
+									:final_exam_group, 
+									:restrictions, 
+									:note, 
+									:enrollment, 
+									:department_name, 
+									:course_number, 
+									:course_dependency_type, 
+									:course_section_number, 
+									:course_type,
+									:enrollment_limit,
+									:enrolled,
+									:waitlist,
+									:avail_seats
+end

@@ -81,8 +81,21 @@ namespace :schedule do
     end
   end
 
-  task :test => :environment do
+  task :test_update => :environment do
     process_schedule_page(Nokogiri::HTML(open("http://localhost/~dementrock/schedule.html")))
+  end
+
+  task :test_conflict => :environment do
+    courses = Courses.course_with_time
+    courses.each do |x|
+      courses.each do |y|
+        if x.conflict?(y)
+          puts x.time_interval
+          puts y.time_interval
+          puts x.time_conflict(y) / 3600.0
+        end
+      end
+    end
   end
 
   task :update_courses => :environment do

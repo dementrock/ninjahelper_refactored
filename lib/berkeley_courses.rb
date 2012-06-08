@@ -65,9 +65,22 @@ module BerkeleyCourses
 
   end
 
-  def time_conflict?(other_course)
+  def conflict?(other_course)
+    not time_conflict(other_course).zero? 
+  end
+
+  def time_conflict(other_course)
     time1 = self.time_interval
     time2 = other_course.time_interval
+    if time1.nil? or time2.nil?
+      return 0
+    end
+    common_days = time1[:days] & time2[:days]
+    start1 = Time.parse(time1[:start_time]).time_of_day
+    end1 = Time.parse(time1[:end_time]).time_of_day
+    start2 = Time.parse(time2[:start_time]).time_of_day
+    end2 = Time.parse(time2[:end_time]).time_of_day
+    common_days.length * [[end1, end2].min - [start1, start2].max, 0].max
   end
 
 end

@@ -27,6 +27,8 @@ gem 'nokogiri'
 
 gem 'ampex'
 
+gem 'time_of_day'
+
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 

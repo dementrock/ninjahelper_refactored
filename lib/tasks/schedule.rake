@@ -20,8 +20,6 @@ namespace :schedule do
   }
 
   def separate_time_location(str_time_location)
-    time = ""
-    location = ""
     if str_time_location =~ /,/
       time, location = str_time_location.split(/,/)
     elsif str_time_location =~ /UNSCHED(.*)/
@@ -34,7 +32,7 @@ namespace :schedule do
       time = location = str_time_location
       logger.error "unrecognized location string: #{str_time_location}"
     end
-    return time.strip, location.strip
+    return (time || "").strip, (location || "").strip
   end
 
   def get_info_from_course_table(course_table)

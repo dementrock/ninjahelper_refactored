@@ -29,6 +29,10 @@ gem 'ampex'
 
 gem 'time_of_day'
 
+
+group :development do
+	gem 'annotate'
+end
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 

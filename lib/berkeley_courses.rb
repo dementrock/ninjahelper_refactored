@@ -58,9 +58,9 @@ module BerkeleyCourses
     end_minute = format(end_minute, 2)
 
     return {
-      :days => day,
-      :start_time => "#{start_hour}:#{start_minute}",
-      :end_time => "#{end_hour}:#{end_minute}",
+      days: day,
+      start_time: "#{start_hour}:#{start_minute}",
+      end_time: "#{end_hour}:#{end_minute}",
     }
 
   end
@@ -81,6 +81,10 @@ module BerkeleyCourses
     start2 = Time.parse(time2[:start_time]).time_of_day
     end2 = Time.parse(time2[:end_time]).time_of_day
     common_days.length * [[end1, end2].min - [start1, start2].max, 0].max
+  end
+
+  def subsection?
+    self.course_dependency_type == 'S'
   end
 
 end

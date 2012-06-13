@@ -1,4 +1,12 @@
-source 'http://ruby.taobao.org/'
+source 'https://rubygems.org'
+
+def gem_available?(name)
+   Gem::Specification.find_by_name(name)
+rescue Gem::LoadError
+   false
+rescue
+   Gem.available?(name)
+end
 
 gem 'rails', '3.2.3'
 
@@ -29,6 +37,9 @@ gem 'ampex'
 
 gem 'time_of_day'
 
+# user authentication
+gem 'devise'
+
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
@@ -43,3 +54,33 @@ gem 'time_of_day'
 
 # To use debugger
 # gem 'ruby-debug'
+#
+#
+group :development do
+  # Refresh browser on save
+  gem 'awesome_print'
+  gem 'rack-livereload'
+  gem 'guard-livereload'
+
+  # Autorun tests on save
+  gem 'guard-rspec'
+
+  # Restart server when config changes
+  if gem_available?('guard-rails')
+    gem 'guard-rails'
+  end
+
+  # Faster than webrick and doesn't have annoying spam
+  gem 'thin'
+
+  # For debugging
+  gem 'pry'
+
+  # Annotate models with schema info
+  gem 'annotate', :git => 'git://github.com/ctran/annotate_models.git'
+
+  # Color coding in irb and stuff
+  gem 'brice'
+
+  gem "rails-erd"
+end

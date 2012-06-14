@@ -84,3 +84,6 @@ group :development do
 
   gem "rails-erd"
 end
+
+# automated web interaction used for telebears auto-enrollment
+gem 'mechanize'

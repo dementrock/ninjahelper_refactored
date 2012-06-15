@@ -1,7 +1,7 @@
 require 'mechanize'
 require 'yaml'
 
-def within_telebears(&action)
+def within_telebears(action)
   config = YAML::load(File.open('config.yaml').read)
   agent = Mechanize.new
   telebears_url = 'https://telebears.berkeley.edu/'
@@ -20,8 +20,8 @@ def within_telebears(&action)
 end
 
 def drop_class(ccn)
-  within_telebears do |page|
-    puts "entering enrollment page..."
+    puts "dropping #{ccn}"
+    puts "entering enrollment `page..."
     page = page.link_with(:href => /enrollment/).click
     puts "entering drop class page..."
     page = page.link_with(:href => /drop_class/).click
@@ -32,12 +32,10 @@ def drop_class(ccn)
     confirm_form = page.forms.first
     puts "confirming..."
     page = confirm_form.click_button(confirm_form.button_with(:value => 'Continue'))
-    return page
-  end
 end
 
 def add_class(ccn, grade_option=nil, units=nil, cec=nil)
-  within_telebears do |page|
+    puts "adding #{ccn}"
     puts "entering enrollment page..."
     page = page.link_with(:href => /enrollment/).click
     puts "entering add class page..."
@@ -48,12 +46,18 @@ def add_class(ccn, grade_option=nil, units=nil, cec=nil)
     confirm_form = page.forms.first
     puts "confirming..."
     page = confirm_form.click_button(confirm_form.button_with(:value => 'Continue'))
-  end
+end
+
+@tasks = Proc.new do #lists of tasks in semi-natural language
+  #drop_class('87636')
+  add_class '87636'
 end
 
 def main
-  #drop_class('87636')
-  add_class('87636')
+  puts 'starting sequence of tasks'
+  within_telebears @tasks
+  puts 'ending'
 end
 
 main
+

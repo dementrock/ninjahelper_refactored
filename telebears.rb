@@ -36,7 +36,6 @@ end
 
 def add_class(hash)
     ccn = hash.is_a?(Hash) ? hash[:ccn] : hash
-    puts ccn
     puts "adding #{ccn}"
     puts "entering enrollment @page..."
     @page = @page.link_with(:href => /enrollment/).click
@@ -46,7 +45,7 @@ def add_class(hash)
     add_form["_InField1"] = ccn
     @page = add_form.click_button(add_form.button_with(:value => 'Continue'))
     puts @page.inspect
-    @page = hash[:with_section].each {|ccn| add_section ccn} if not @page.forms.first.button_with value: 'Confirm'
+    hash[:with_section].each {|ccn| add_section ccn} if not @page.forms.first.button_with value: 'Confirm'
     confirm_form = @page.forms.first
     puts "confirming..."
     @page = confirm_form.click_button(confirm_form.button_with(:value => 'Confirm'))

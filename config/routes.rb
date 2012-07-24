@@ -1,4 +1,4 @@
-NinjahelperRefactored::Application.routes.draw do
+Ninjahelper::Application.routes.draw do
   authenticated :user do
     root :to => 'home#index'
   end

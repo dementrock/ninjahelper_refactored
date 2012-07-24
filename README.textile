@@ -1,4 +1,4 @@
-h1. Ninjahelper Refactored
+h1. Ninjahelper
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 

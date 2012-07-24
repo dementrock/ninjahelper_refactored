@@ -4,4 +4,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-NinjahelperRefactored::Application.load_tasks
+Ninjahelper::Application.load_tasks

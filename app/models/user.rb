@@ -58,14 +58,6 @@ class User
   field :invited_by_id, :type => String
   field :invited_by_type, :type => String
 
-  has_and_belongs_to_many :watched_courses, class_name: "Course", inverse_of: :watchers
+  has_and_belongs_to_many :watched_courses, class_name: "Course", inverse_of: :watchers, autosave: true
 
-  # restrict to .edu email address
-  validate :presence_domain_email
-  def presence_domain_email
-    berkeley, edu = email.split("@").last.split(".")[-2..-1]
-    if berkeley.downcase != "berkeley" or edu.downcase != "edu"
-      errors.add(:email, 'must be berkeley.edu email address')
-    end
-  end
 end

@@ -43,7 +43,7 @@ class EnrollmentChangeMailer < ActionMailer::Base
 
     puts @messages
       
-    mail :to => user.email, :subject => "Status change of course with CCN #{course.id}"
+    mail :to => user.email, :subject => "Status change of course with CCN #{course.ccn}"
   end
 
 end

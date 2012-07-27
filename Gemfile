@@ -39,4 +39,8 @@ gem "cancan", ">= 1.6.8"
 gem "rolify", ">= 3.1.0"
 gem "bootstrap-sass", ">= 2.0.4.0"
 gem "simple_form"
-gem "rails-footnotes", ">= 3.7", :group => :development
+
+
+gem "nokogiri"
+gem "pry"
+gem "rufus-scheduler"

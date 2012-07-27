@@ -1,3 +1,14 @@
 %h3 Home
-- @users.each do |user|
-  %p User: #{link_to user.name, user}
+
+- if @user
+  %h3
+    Monitored courses:
+  %ul
+    - @user.watched_courses.each do |course|
+      %li
+        = course.ccn
+        = link_to 'delete', unwatch_course_path(course.ccn), method: :delete
+  = form_tag(watch_course_path, method: "post") do
+    = label_tag(:ccn, "Monitor a new course (enter ccn):")
+    = text_field_tag(:ccn)
+    = submit_tag("Submit")

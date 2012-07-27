@@ -1,0 +1,5 @@
+%p Dear #{@user.name}, we have detected the following change of the course #{@course.ccn} you have been watching:
+
+%ul
+  - @messages.each do |message|
+    %li= message

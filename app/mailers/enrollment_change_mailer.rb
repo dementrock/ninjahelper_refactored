@@ -42,6 +42,10 @@ class EnrollmentChangeMailer < ActionMailer::Base
     end
 
     puts @messages
+    if @messages.length == 0 or @messages.join("") == ""
+      Rails.logger.info "Message is none: #{@messages}\n #{course.as_document}"
+      return
+    end
       
     mail :to => user.email, :subject => "Status change of course with CCN #{course.ccn}"
   end

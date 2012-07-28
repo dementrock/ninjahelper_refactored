@@ -7,6 +7,13 @@ class NinjahelperMailer < ActionMailer::Base
     @messages = messages
     
     Rails.logger.info "Send message to #{user.email} with message #{@messages}\n course info: #{course.as_document}"
+
+    @messages.each do |message|
+      if message =~ /from to/i
+        Rails.logger.info "Empty from info: #{@messages}"
+        return
+      end
+    end
       
     mail :to => user.email, :subject => "Status change of course with CCN #{course.ccn}"
   end

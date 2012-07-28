@@ -17,8 +17,16 @@ class UserWatchedCoursesController < ApplicationController
       render_json_errors course: ["not found"]
       return
     end
+    if not course.supported?
+      render_json_errors course: ["is not supported currently"]
+      return
+    end
     if user.watched_courses.include? course
       render_json_errors course: ["has already been watched"]
+      return
+    end
+    if user.watched_courses.length >= 20 # TODO move this to configuration
+      render_json_errors user: ["can only watch up to 20 courses"]
       return
     end
     user.watched_courses << course

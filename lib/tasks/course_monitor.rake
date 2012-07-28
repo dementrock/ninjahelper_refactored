@@ -8,10 +8,10 @@ task :course_monitor => :environment do
     scheduler.every "5m", blocking: true do
       Course.all.to_a.find_all(&:has_watchers?).each do |course|
         Rails.logger.info "updating course info for #{course.ccn}"
-        course.update_enrollment_info
-        if course.enrollment_diff.length > 0
+        messages = course.update_enrollment_info
+        if messages.length > 0
           course.watchers.each do |watcher|
-            EnrollmentChangeMailer.enrollment_change_email(watcher, course).deliver
+            NinjahelperMailer.enrollment_change_email(watcher, course, messages).deliver
           end
         end
       end

@@ -11,7 +11,6 @@ class Course
   field :current_enroll, type: Integer, default: 0
   field :waitlist_limit, type: Integer, default: 0
   field :current_waitlist, type: Integer, default: 0
-  #field :prev_info, type: Hash, default: {}
   field :is_waitlist_used, type: Boolean, default: false
   field :is_section_full, type: Boolean, default: false
   field :is_all_full, type: Boolean, default: false
@@ -58,7 +57,6 @@ class Course
       is_waitlist_used: is_waitlist_used,
       is_section_full: is_section_full,
       is_all_full: is_all_full,
-      is_valid: is_valid,
     }
   end
 
@@ -77,55 +75,68 @@ class Course
       return {}
     end
     if page.text =~ /The class you requested was not found/i
-      self.is_valid = false
-      self.save
+      update_attributes!(
+        is_valid: false,
+      )
       Rails.logger.info "Invalid course: #{as_document}"
       return {}
     end
     if not page.text =~ /enrollment information/i # cannot monitor on the separated page; no info displayed
-      self.is_supported = false
-      self.save
+      update_attributes!(
+        is_supported: false,
+      )
       Rails.logger.info "Unsupported course: #{as_document}"
       return {}
     end
     blockquote = page.xpath("//blockquote").first
     if blockquote.nil?
-      self.is_supported = false
-      self.is_valid = false # might change this in the future depending on what it actually looks like
-      self.save
+      update_attributes!(
+        is_supported: false,
+        is_valid: false, # might change this in the future depending on what it actually looks like
+      )
       Rails.logger.info "Unsupported course: #{as_document}"
       Rails.logger.info "page: #{page.text}"
       return {}
     end
     raw_description = page.xpath("//blockquote").first.text
+
     prev_info = self.full_enrollment_info # store prev info for later comparison
-    self.is_waitlist_used = !(raw_description =~ /does not use a Waiting List/i)
+
+    _is_waitlist_used = !(raw_description =~ /does not use a Waiting List/i)
     numbers = raw_description.scan(/\d+/).map(&:to_i)
 
     Rails.logger.info "Number #{numbers} parsed from description #{raw_description}"
 
     case numbers.length
     when 4
-      self.current_enroll, self.enroll_limit, self.current_waitlist, self.waitlist_limit = numbers
+      _current_enroll, _enroll_limit, _current_waitlist, _waitlist_limit = numbers
     when 0
-      self.is_all_full = true
+      _is_all_full = true
     when 2
-      if self.is_waitlist_used
-        self.current_waitlist, self.waitlist_limit = numbers
-        self.is_section_full = true
+      if _is_waitlist_used
+        _current_waitlist, _waitlist_limit = numbers
+        _is_section_full = true
       else
-        self.current_enroll, self.enroll_limit = numbers
+        _current_enroll, _enroll_limit = numbers
       end
     else
       Rails.logger.info "This is really weird orz... (enrollment information for #{ccn}): #{raw_description}"
     end
 
-    if self.waitlist_limit == 0
-      self.is_waitlist_used = false # actually false
+    if _waitlist_limit == 0
+      _is_waitlist_used = false # actually false
     end
-    
-    self.is_first_time = false
-    self.save
+
+    update_attributes!(
+      current_enroll: _current_enroll,
+      enroll_limit: _enroll_limit,
+      current_waitlist: _current_waitlist,
+      waitlist_limit: _waitlist_limit,
+      is_waitlist_used: _is_waitlist_used,
+      is_section_full: _is_section_full,
+      is_all_full: _is_all_full,
+      is_first_time: false,
+    )
 
     return diff_message(prev_info, full_enrollment_info)
   end

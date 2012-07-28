@@ -1,0 +1,3 @@
+module UserWatchedCoursesHelper
+  
+end

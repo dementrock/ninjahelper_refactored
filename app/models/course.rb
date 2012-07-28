@@ -20,6 +20,10 @@ class Course
 
   has_and_belongs_to_many :watchers, class_name: "User", inverse_of: :watched_courses, autosave: true
 
+  attr_accessible :enroll_limit, :current_enroll, :waitlist_limit, :current_waitlist,
+                  :is_waitlist_used, :is_section_full, :is_all_full, :is_first_time,
+                  :is_valid, :is_supported
+
   validates_presence_of :ccn
   validates_uniqueness_of :ccn
   validate :ccn_correct_format
@@ -61,8 +65,8 @@ class Course
   end
 
   def update_enrollment_info(options={})
-    return {} if not self.is_valid
-    return {} if not self.is_supported
+    return {} if !self.is_valid && !self.is_first_time
+    return {} if !self.is_supported && !self.is_first_time
     begin
       page = Nokogiri::HTML(open(enrollment_url))
     rescue Exception => e
@@ -98,6 +102,15 @@ class Course
       Rails.logger.info "page: #{page.text}"
       return {}
     end
+
+    _current_enroll = self.current_enroll || 0
+    _enroll_limit = self.enroll_limit || 0
+    _current_waitlist = self.current_waitlist || 0
+    _waitlist_limit = self.waitlist_limit || 0
+    _is_waitlist_used = self.is_waitlist_used || false
+    _is_section_full = self.is_section_full || false
+    _is_all_full = self.is_all_full || false
+    
     raw_description = page.xpath("//blockquote").first.text
 
     prev_info = self.full_enrollment_info # store prev info for later comparison
@@ -136,7 +149,11 @@ class Course
       is_section_full: _is_section_full,
       is_all_full: _is_all_full,
       is_first_time: false,
+      is_valid: true,
+      is_supported: true,
     )
+
+    Rails.logger.info "prev_info: #{prev_info}\n now_info: #{full_enrollment_info}"
 
     return diff_message(prev_info, full_enrollment_info)
   end

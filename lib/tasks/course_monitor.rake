@@ -10,6 +10,7 @@ task :course_monitor => :environment do
         Rails.logger.info "updating course info for #{course.ccn}"
         messages = course.update_enrollment_info
         if messages.length > 0
+          Rails.logger.info "sending mail to #{course.watchers.map(&:email)}"
           course.watchers.each do |watcher|
             NinjahelperMailer.enrollment_change_email(watcher, course, messages).deliver
           end

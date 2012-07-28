@@ -8,7 +8,7 @@
 %h3
   Monitored courses:
 %ul
-  - user.watched_courses.each do |course|
+  - user.watched_courses.sort_by(&:ccn).each do |course|
     %li
       = course.ccn
       = link_to 'delete', user_watched_course_path(user, course), method: :delete

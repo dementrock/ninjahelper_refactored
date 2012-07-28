@@ -1,0 +1,21 @@
+- content_for :head do
+  %script{type: "text/javascript"}
+    if($$url === undefined) {
+    var $$url = {};
+    }
+    $$url['watch_course'] = "#{user_watched_courses_path(user)}"
+
+%h3
+  Monitored courses:
+%ul
+  - user.watched_courses.each do |course|
+    %li
+      = course.ccn
+      = link_to 'delete', user_watched_course_path(user, course), method: :delete
+= form_tag(user_watched_courses_path(user), method: :post, id: "user_watched_course_create") do
+  .form-errors
+  = label_tag(:ccn, "Monitor a new course (enter ccn):")
+  = text_field_tag(:ccn)
+  %span.form-info
+  %br
+  = submit_tag("Submit")

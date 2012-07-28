@@ -10,6 +10,7 @@ task :course_monitor => :environment do
         Rails.logger.info "updating course info for #{course.ccn}"
         course.update_enrollment_info
         if course.enrollment_diff.length > 0
+          Rails.logger.info "sending mail to #{course.watchers.map(&:email)}"
           course.watchers.each do |watcher|
             EnrollmentChangeMailer.enrollment_change_email(watcher, course).deliver
           end

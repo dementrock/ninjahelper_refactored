@@ -43,7 +43,7 @@ class Course
   end
       
   def ccn_correct_format
-    if ccn !~ /\d{5}/
+    if ccn !~ /^\d{5}$/
       errors.add(:ccn, 'must have exactly 5 digits')
     end
   end
@@ -74,22 +74,30 @@ class Course
       Rails.logger.info e.backtrace.inspect
       return {}
     end
-    if page.text =~ /Sorry, all lines are busy now. Please connect later./
+    if page.text =~ /busy now/mi
       Rails.logger.info "All lines busy when trying to update: #{as_document}"
+      Rails.logger.info "page: #{page.text}"
       return {}
     end
-    if page.text =~ /The class you requested was not found/i
+    if page.text =~ /currently unavailable/mi
+      Rails.logger.info "system unavailable when trying to update: #{as_document}"
+      Rails.logger.info "page: #{page.text}"
+      return {}
+    end
+    if page.text =~ /was not found/mi
       update_attributes!(
         is_valid: false,
       )
       Rails.logger.info "Invalid course: #{as_document}"
+      Rails.logger.info "page: #{page.text}"
       return {}
     end
-    if not page.text =~ /enrollment information/i # cannot monitor on the separated page; no info displayed
+    if not page.text =~ /enrollment information/mi # cannot monitor on the separated page; no info displayed
       update_attributes!(
         is_supported: false,
       )
       Rails.logger.info "Unsupported course: #{as_document}"
+      Rails.logger.info "page: #{page.text}"
       return {}
     end
     blockquote = page.xpath("//blockquote").first

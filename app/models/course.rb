@@ -190,9 +190,7 @@ private
       messages.push "This course is now full"
       return messages
     end
-    if diff[:is_waitlist_used] == true
-      messages.push "This course has a waitlist now"
-    elsif diff[:is_waitlist_used] == false
+    if diff[:is_waitlist_used] == false
       messages.push "This course has no waitlist now"
     end
     if diff.has_key? :waitlist_limit

@@ -167,6 +167,15 @@ class Course
   end
 
 private
+
+  def _from(cnt)
+    if cnt > 0
+      "from #{cnt} "
+    else
+      ""
+    end
+  end
+
   def diff_message(prev_info, now_info)
 
     diff = now_info.diff(prev_info)
@@ -181,29 +190,26 @@ private
       messages.push "This course is now full"
       return messages
     end
-    if diff[:is_all_full] == false
-      messages.push "The course is changed from full to (possibly) available."
-    end
     if diff[:is_waitlist_used] == true
       messages.push "This course has a waitlist now"
     elsif diff[:is_waitlist_used] == false
       messages.push "This course has no waitlist now"
     end
     if diff.has_key? :waitlist_limit
-      messages.push "The waitlist limit has changed from #{prev_info[:waitlist_limit]} to #{now_info[:waitlist_limit]}"
+      messages.push "The waitlist limit has changed #{_from(prev_info[:waitlist_limit])}to #{now_info[:waitlist_limit]}"
     end
     if diff.has_key? :current_waitlist
-      message = "The current waitlist has changed from #{prev_info[:current_waitlist]} to #{now_info[:current_waitlist]}"
+      message = "The current waitlist has changed #{_from(prev_info[:current_waitlist])}to #{now_info[:current_waitlist]}"
       if not diff.has_key? :waitlist_limit
         message += ", with waitlist limit #{now_info[:waitlist_limit]}"
       end
       messages.push message
     end
     if diff.has_key? :enroll_limit
-      messages.push "The enrollment limit has changed from #{prev_info[:enroll_limit]} to #{now_info[:enroll_limit]}"
+      messages.push "The enrollment limit has changed #{_from(prev_info[:enroll_limit])} to #{now_info[:enroll_limit]}"
     end
     if diff.has_key? :current_enroll
-      message = "The current enrollment has changed from #{prev_info[:current_enroll]} to #{now_info[:current_enroll]}"
+      message = "The current enrollment has changed #{_from(prev_info[:current_enroll])} to #{now_info[:current_enroll]}"
       if not diff.has_key? :enroll_limit
         message += ", with enrollment limit #{now_info[:enroll_limit]}"
       end

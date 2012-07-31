@@ -22,7 +22,7 @@ class Course
 
   attr_accessible :enroll_limit, :current_enroll, :waitlist_limit, :current_waitlist,
                   :is_waitlist_used, :is_section_full, :is_all_full, :is_first_time,
-                  :is_valid, :is_supported
+                  :is_valid, :is_supported, :ccn
 
   validates_presence_of :ccn
   validates_uniqueness_of :ccn

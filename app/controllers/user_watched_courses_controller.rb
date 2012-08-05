@@ -25,6 +25,9 @@ class UserWatchedCoursesController < ApplicationController
       render_json_errors course: ["has already been watched"]
       return
     end
+    if params[:monitor_type == '1'] and !course.is_waitlist_used
+      render_json_errors course: ["The specified course does not have a waitlist."]
+    end
     # if user.watched_courses.length >= 20 # TODO move this to configuration
     if user.can_watch_more_courses?
       render_json_errors user: ["can only watch up to 20 courses"]
@@ -33,7 +36,7 @@ class UserWatchedCoursesController < ApplicationController
     new_watch = Watch.new
     new_watch.user = user
     new_watch.course = course
-    new_watch.wl= params[:monitor_type] == 1
+    new_watch.wl= params[:monitor_type] == '1'
     new_watch.save!
     user.watches << new_watch
     course.watches << new_watch   #dont think this is necessary
@@ -47,7 +50,7 @@ class UserWatchedCoursesController < ApplicationController
     puts params
     watch = Watch.find(params[:id])
     if watch
-      watch.delete!
+      watch.delete
       respond_to do |format|
         format.json { render json: course }
         format.html { redirect_to :root }

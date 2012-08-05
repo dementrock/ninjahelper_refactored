@@ -6,7 +6,6 @@ class Course
 
   field :ccn, type: String
   field :name, type: String
-  field :status, type: String
 
   # fields related to enrollment information
   field :enroll_limit, type: Integer, default: 0
@@ -114,7 +113,7 @@ class Course
       return {}
     end
 
-    Rails.logger.info page.text.scan(/<FONT FACE="Helvetica, Arial, sans-serif" SIZE=1><b>(.*?)<\/a>/).reduce(:+)
+  
     if !self.name
       self.name = page.text.scan(/<FONT FACE="Helvetica, Arial, sans-serif" SIZE=1><b>(.*?)<\/a>/).reduce(:+)
       self.save!
@@ -189,41 +188,41 @@ private
 
     diff = now_info.diff(prev_info)
 
-    if diff.length == 0
-      return []
-    end
+  #   if diff.length == 0
+  #     return []
+  #   end
 
-    messages = []
+  #   messages = []
 
-    if diff[:is_all_full] == true
-      messages.push "This course is now full"
-      return messages
-    end
-    if diff[:is_waitlist_used] == false
-      messages.push "This course has no waitlist now"
-    end
-    if diff.has_key? :waitlist_limit
-      messages.push "The waitlist limit has changed #{_from(prev_info[:waitlist_limit])}to #{now_info[:waitlist_limit]}"
-    end
-    if diff.has_key? :current_waitlist
-      message = "The current waitlist has changed #{_from(prev_info[:current_waitlist])}to #{now_info[:current_waitlist]}"
-      if not diff.has_key? :waitlist_limit
-        message += ", with waitlist limit #{now_info[:waitlist_limit]}"
-      end
-      messages.push message
-    end
-    if diff.has_key? :enroll_limit
-      messages.push "The enrollment limit has changed #{_from(prev_info[:enroll_limit])} to #{now_info[:enroll_limit]}"
-    end
-    if diff.has_key? :current_enroll
-      message = "The current enrollment has changed #{_from(prev_info[:current_enroll])} to #{now_info[:current_enroll]}"
-      if not diff.has_key? :enroll_limit
-        message += ", with enrollment limit #{now_info[:enroll_limit]}"
-      end
-      messages.push message
-    end
+  #   if diff[:is_all_full] == true
+  #     messages.push "This course is now full"
+  #     return messages
+  #   end
+  #   if diff[:is_waitlist_used] == false
+  #     messages.push "This course has no waitlist now"
+  #   end
+  #   if diff.has_key? :waitlist_limit
+  #     messages.push "The waitlist limit has changed #{_from(prev_info[:waitlist_limit])}to #{now_info[:waitlist_limit]}"
+  #   end
+  #   if diff.has_key? :current_waitlist
+  #     message = "The current waitlist has changed #{_from(prev_info[:current_waitlist])}to #{now_info[:current_waitlist]}"
+  #     if not diff.has_key? :waitlist_limit
+  #       message += ", with waitlist limit #{now_info[:waitlist_limit]}"
+  #     end
+  #     messages.push message
+  #   end
+  #   if diff.has_key? :enroll_limit
+  #     messages.push "The enrollment limit has changed #{_from(prev_info[:enroll_limit])} to #{now_info[:enroll_limit]}"
+  #   end
+  #   if diff.has_key? :current_enroll
+  #     message = "The current enrollment has changed #{_from(prev_info[:current_enroll])} to #{now_info[:current_enroll]}"
+  #     if not diff.has_key? :enroll_limit
+  #       message += ", with enrollment limit #{now_info[:enroll_limit]}"
+  #     end
+  #     messages.push message
+  #   end
 
-    return messages
+  #   return messages
   end
 
 end

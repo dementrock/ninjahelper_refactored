@@ -15,7 +15,7 @@ class NinjahelperMailer < ActionMailer::Base
       end
     end
       
-    mail :to => user.email, :subject => "Status change of course with CCN #{course.ccn}"
+    mail :to => user.email, :subject => "Status change of course #{course.name} with CCN #{course.ccn}"
   end
 
 end

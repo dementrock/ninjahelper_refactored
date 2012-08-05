@@ -7,7 +7,7 @@ Ninjahelper::Application.routes.draw do
   end
   devise_for :users
   resources :users, :only => [:show, :index] do
-    resources :watched_courses, :controller => "user_watched_courses", :only => [:create, :destroy, :index]
+    resources :watches, :controller => "user_watched_courses", :only => [:create, :destroy, :index]
     #match "watched_courses" => "watch_courses#create", via: :post, as: :watched_courses
     #match "watched_courses/(:ccn)" => "watch_courses#delete", via: :delete, as: :watched_course
   end

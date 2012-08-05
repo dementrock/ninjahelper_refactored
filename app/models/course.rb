@@ -5,6 +5,8 @@ class Course
   include Mongoid::Timestamps
 
   field :ccn, type: String
+  field :name, type: String
+  field :status, type: String
 
   # fields related to enrollment information
   field :enroll_limit, type: Integer, default: 0
@@ -19,6 +21,7 @@ class Course
   field :is_supported, type: Boolean, default: true
 
   has_and_belongs_to_many :watchers, class_name: "User", inverse_of: :watched_courses, autosave: true
+  has_many :watches, class_name: "Watch", inverse_of: :course, autosave: true
 
   attr_accessible :enroll_limit, :current_enroll, :waitlist_limit, :current_waitlist,
                   :is_waitlist_used, :is_section_full, :is_all_full, :is_first_time,
@@ -109,6 +112,12 @@ class Course
       Rails.logger.info "Unsupported course: #{as_document}"
       Rails.logger.info "page: #{page.text}"
       return {}
+    end
+
+    Rails.logger.info page.text.scan(/<FONT FACE="Helvetica, Arial, sans-serif" SIZE=1><b>(.*?)<\/a>/).reduce(:+)
+    if !self.name
+      self.name = page.text.scan(/<FONT FACE="Helvetica, Arial, sans-serif" SIZE=1><b>(.*?)<\/a>/).reduce(:+)
+      self.save!
     end
 
     _current_enroll = self.current_enroll || 0

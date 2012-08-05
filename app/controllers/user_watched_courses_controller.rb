@@ -21,26 +21,33 @@ class UserWatchedCoursesController < ApplicationController
       render_json_errors course: ["is not supported currently"]
       return
     end
-    if user.watched_courses.include? course
+    if user.watched? course
       render_json_errors course: ["has already been watched"]
       return
     end
-    if user.watched_courses.length >= 20 # TODO move this to configuration
+    # if user.watched_courses.length >= 20 # TODO move this to configuration
+    if user.can_watch_more_courses?
       render_json_errors user: ["can only watch up to 20 courses"]
       return
     end
-    user.watched_courses << course
+    new_watch = Watch.new
+    new_watch.user = user
+    new_watch.course = course
+    new_watch.wl= params[:monitor_type] == 1
+    new_watch.save!
+    user.watches << new_watch
+    course.watches << new_watch   #dont think this is necessary
     user.save!
+    course.save!
     render json: course
   end
 
   def destroy
     user = current_user
     puts params
-    course = Course.find(params[:id])
-    if course
-      user.watched_courses.delete(course)
-      user.save!
+    watch = Watch.find(params[:id])
+    if watch
+      watch.delete!
       respond_to do |format|
         format.json { render json: course }
         format.html { redirect_to :root }

@@ -58,6 +58,17 @@ class User
   field :invited_by_id, :type => String
   field :invited_by_type, :type => String
 
-  has_and_belongs_to_many :watched_courses, class_name: "Course", inverse_of: :watchers, autosave: true
+  has_and_belongs_to_many :watched_courses, class_name: "Course", inverse_of: :watchers , autosave: true
+  has_many :watches, class_name: "Watch", inverse_of: :user , autosave: true
+
+  def watched?(x)
+    self.watches.where(course: x).exists?
+  end
+
+  def can_watch_more_courses?
+    self.watches.length >= 20 #some say this is to be moved
+  end
+
+
 
 end

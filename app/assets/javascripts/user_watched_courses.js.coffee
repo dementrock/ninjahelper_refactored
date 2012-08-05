@@ -3,8 +3,8 @@ $ ->
   $form = $("form#user_watched_course_create")
   if $form.length
     $local = (selector) -> $form.find(selector)
-    error = (msg) -> $local(".form-errors").html(msg)
-    clearError = -> $local(".form-errors").html("")
+    error = (msg) -> $local(".alert").html(msg).removeClass("hide")
+    clearError = -> $local(".alert").html("")
     
     $form.submit (event) ->
       event.preventDefault()
@@ -12,6 +12,7 @@ $ ->
         return
       $form.attr("submitting", "")
       ccn = $local("input[name=ccn]").val()
+      monitor_type = $local("input[name=monitor_type]").val()
       if not ccn.match /^\d{5}$/
         error "ccn format incorrect (must consist of exactly 5 digits)"
         $form.removeAttr("submitting")
@@ -19,7 +20,7 @@ $ ->
       $.ajax(
         url: $$url['watch_course']
         type: "POST"
-        data: {ccn: ccn}
+        data: {ccn: ccn, monitor_type: monitor_type}
         dataType: 'json'
         success: (data, status, xhr) ->
           clearError()

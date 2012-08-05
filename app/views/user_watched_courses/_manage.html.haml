@@ -3,19 +3,48 @@
     if($$url === undefined) {
     var $$url = {};
     }
-    $$url['watch_course'] = "#{user_watched_courses_path(user)}"
+    $$url['watch_course'] = "#{user_watches_path(user)}"
 
-%h3
-  Monitored courses:
-%ul
-  - user.watched_courses.sort_by(&:ccn).each do |course|
-    %li
-      = course.ccn
-      = link_to 'delete', user_watched_course_path(user, course), method: :delete
-= form_tag(user_watched_courses_path(user), method: :post, id: "user_watched_course_create") do
-  .form-errors
-  = label_tag(:ccn, "Monitor a new course (enter ccn):")
-  = text_field_tag(:ccn)
-  %span.form-info
-  %br
-  = submit_tag("Submit")
+
+.span8
+  %h3 Monitored courses:
+
+  %table.table.table-bordered.table-striped
+    %thead
+      %tr
+        %th CCN
+        %th Name
+        %th Status
+        %th &nbsp;
+    %tbody
+      - user.watches.sort_by(&:created_at).each do |watch| 
+        - if watch
+          - c = watch.course
+          %tr
+            %td= c.ccn
+            %td= c.name
+            %td= c.status
+            %td= link_to 'delete', user_watches_path(user, watch), method: :delete, class: 'btn'
+        - else
+          %tr No courses watched yet
+  %p
+    %a.btn.btn-primary{:'data-toggle' => 'modal', :'data-target' => '#new-course-modal'}
+      %i.icon-white.icon-plus-sign
+      New Course To Watch
+
+
+.modal.hide.fade#new-course-modal
+  .modal-header
+    %button.close{:'data-dismiss' => 'modal'} x
+    %h3 Add Course
+  .modal-body
+    = form_tag(user_watches_path(user), method: :post, id: 'user_watched_course_create')
+    = label_tag(:ccn, 'CCN of the course:')
+    = text_field_tag(:ccn)
+    = label_tag(:monitor_type, 'Watch waitlist? ')
+    = select_tag('monitor_type', options_for_select(['yes','no']))
+    .br
+
+    .alert.hide
+    %a.btn{:'data-dismiss' => 'modal'} Close
+    %input.btn.btn-primary{:type => 'submit', :value => 'Add Course'}

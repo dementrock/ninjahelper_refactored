@@ -23,7 +23,7 @@
           %tr
             %td= c.ccn
             %td= c.name
-            %td= c.status
+            %td= watch.status
             %td= link_to 'delete', user_watch_path(user, watch), method: :delete, class: 'btn'
         - else
           %tr No courses watched yet

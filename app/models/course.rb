@@ -66,6 +66,11 @@ class Course
     }
   end
 
+  def update_name(page)
+    self.name = page.css('b')[3].text
+    self.save!
+  end
+
   def update_enrollment_info(options={})
     return {} if !self.is_valid && !self.is_first_time
     return {} if !self.is_supported && !self.is_first_time
@@ -114,9 +119,8 @@ class Course
     end
 
   
-    if !self.name
-      self.name = page.text.scan(/<FONT FACE="Helvetica, Arial, sans-serif" SIZE=1><b>(.*?)<\/a>/).reduce(:+)
-      self.save!
+    if self.name.nil?
+      self.update_name(page)
     end
 
     _current_enroll = self.current_enroll || 0
